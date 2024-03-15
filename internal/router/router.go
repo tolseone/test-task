@@ -4,7 +4,8 @@ import (
 	"github.com/go-chi/chi"
 
 	"applicationDesignTest/internal/http-server"
-	"applicationDesignTest/internal/service/order"
+	"applicationDesignTest/internal/services"
+
 )
 
 const (
@@ -14,7 +15,7 @@ const (
 func GetRouter() *chi.Mux {
 	router := chi.NewRouter()
 
-	orderHandler := httpserver.Register(order.New())
+	orderHandler := httpserver.Register(services.NewOrderService())
 
 	router.Post(createOrderURL, orderHandler.CreateOrder)
 

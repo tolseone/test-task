@@ -1,8 +1,8 @@
-package hotel
+package domain
 
 import "time"
 
-type Hotel struct {
+type Room struct {
 	ID        string
 	Name      string
 	CreatedAt time.Time

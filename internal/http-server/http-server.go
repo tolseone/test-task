@@ -6,13 +6,13 @@ import (
 
 	"github.com/go-playground/validator/v10"
 
-	model "applicationDesignTest/internal/domain/order"
+	"applicationDesignTest/internal/domain"
 	"applicationDesignTest/internal/lib/logger"
 
 )
 
 type Order interface {
-	CreateOrder(order model.Order) (err error)
+	CreateOrder(order domain.Order) (err error)
 }
 
 type ServerAPI struct {
@@ -32,7 +32,7 @@ func Register(order Order) *ServerAPI {
 func (s *ServerAPI) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	const op = "httpserver.CreateOrder"
 
-	var newOrder model.Order
+	var newOrder domain.Order
 
 	if err := json.NewDecoder(r.Body).Decode(&newOrder); err != nil {
 		s.logger.LogErrorf("%s: %s", op, err.Error())

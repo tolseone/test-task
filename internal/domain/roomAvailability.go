@@ -1,4 +1,4 @@
-package roomavailability
+package domain
 
 import "time"
 

@@ -1,6 +1,6 @@
 package order
 
-import model "applicationDesignTest/internal/domain/order"
+import "applicationDesignTest/internal/domain"
 
 type Storage struct {
 }
@@ -9,13 +9,13 @@ func NewStorage() *Storage {
 	return &Storage{}
 }
 
-var orders []model.Order
+var orders []domain.Order
 
-func (s *Storage) GetOrders() []model.Order {
+func (s *Storage) GetOrders() []domain.Order {
 	return orders
 }
 
-func (s *Storage) SaveOrder(order model.Order) bool {
+func (s *Storage) SaveOrder(order domain.Order) bool {
 	orders = append(orders, order)
 	return true
 }

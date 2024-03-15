@@ -14,21 +14,9 @@ import (
 	"net/http"
 	"os"
 
-	"applicationDesignTest/internal/domain/models"
-	"applicationDesignTest/internal/lib/helper"
 	"applicationDesignTest/internal/lib/logger"
 	"applicationDesignTest/internal/router"
 )
-
-var Orders = []models.Order{}
-
-var Availability = []models.RoomAvailability{
-	{HotelID: "reddison", RoomID: "lux", Date: helper.Date(2024, 1, 1), Quota: 1},
-	{HotelID: "reddison", RoomID: "lux", Date: helper.Date(2024, 1, 2), Quota: 1},
-	{HotelID: "reddison", RoomID: "lux", Date: helper.Date(2024, 1, 3), Quota: 1},
-	{HotelID: "reddison", RoomID: "lux", Date: helper.Date(2024, 1, 4), Quota: 1},
-	{HotelID: "reddison", RoomID: "lux", Date: helper.Date(2024, 1, 5), Quota: 0},
-}
 
 func main() {
 	// Get logger

@@ -1,4 +1,4 @@
-package models
+package order
 
 import "time"
 
@@ -9,3 +9,5 @@ type Order struct {
 	From      time.Time `json:"from" validate:"required,time"`
 	To        time.Time `json:"to" validate:"required,time"`
 }
+
+// TODO: CreateOrder

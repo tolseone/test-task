@@ -4,41 +4,57 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/go-chi/chi"
+	"github.com/go-playground/validator/v10"
 
 	"applicationDesignTest/internal/domain/models"
-	"applicationDesignTest/internal/service"
-
+	"applicationDesignTest/internal/lib/logger"
 )
 
-const (
-	createOrderURL = "/orders"
-)
-
-type OrderHandler struct {
-	orderService *service.OrderService
+type Order interface {
+	CreateOrder(order models.Order) (err error)
 }
 
-func NewOrderHandler(orderService *service.OrderService) *OrderHandler {
-	return &OrderHandler{orderService: orderService}
+type ServerAPI struct {
+	order     Order
+	validator *validator.Validate
+	logger    *logger.Logger
 }
 
-func (h *OrderHandler) RegisterRoutes(r chi.Router) {
-	r.Post(createOrderURL, h.CreateOrder)
+func Register(order Order) *ServerAPI {
+	return &ServerAPI{
+		order:     order,
+		validator: validator.New(),
+		logger:    logger.New(),
+	}
 }
 
-func (h *OrderHandler) CreateOrder(w http.ResponseWriter, r *http.Request) {
+func (s *ServerAPI) CreateOrder(w http.ResponseWriter, r *http.Request) {
+	const op = "httpserver.CreateOrder"
+
 	var newOrder models.Order
 
 	if err := json.NewDecoder(r.Body).Decode(&newOrder); err != nil {
+		s.logger.LogErrorf("%s: %s", op, err.Error())
 		http.Error(w, "invalid request", http.StatusBadRequest)
 		return
 	}
 
-	if err := h.orderService.CreateOrder(newOrder); err != nil {
+	if err := s.validator.Struct(newOrder); err != nil {
+		errors := err.(validator.ValidationErrors)
+		for _, e := range errors {
+			s.logger.LogErrorf("Validation error: %s", e)
+		}
+		http.Error(w, "Validation Error", http.StatusBadRequest)
+		return
+	}
+
+	if err := s.order.CreateOrder(newOrder); err != nil {
+		s.logger.LogErrorf("%s: %s", op, err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	s.logger.LogInfo("Order created successfully")
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
